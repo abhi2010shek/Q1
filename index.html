@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Display</title>
+</head>
+<body>
+  <div id="productList"></div>
+
+  <script>
+    async function fetchData() {
+      try {
+        const response = await fetch('https://cors-anywhere.herokuapp.com/https://s3.amazonaws.com/open-to-cors/assignment.json');
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    async function displayData() {
+      const rawData = await fetchData();
+      if (!rawData) return;
+
+      const products = rawData.sort((a, b) => b.Popularity - a.Popularity);
+
+      const productListContainer = document.getElementById('productList');
+      const productList = document.createElement('ul');
+
+      products.forEach(product => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `Title: ${product.Title}, Price: ${product.Price.toFixed(2)}`;
+        productList.appendChild(listItem);
+      });
+
+      productListContainer.appendChild(productList);
+    }
+
+    displayData();
+  </script>
+</body>
+</html>
